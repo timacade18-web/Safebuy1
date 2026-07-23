@@ -78,7 +78,7 @@ class ApiService {
   }
 
   /// Search products — calls backend proxy (handles translation + sorting)
-  Future<List<Product>> searchProducts(String query, {int page = 1, int pageSize, String plat = 'taobao'}) async {
+  Future<List<Product>> searchProducts(String query, {int page = 1, int? pageSize, String plat = 'taobao'}) async {
       final ps = pageSize ?? (plat == '1688' ? 20 : 40);
       final url = '$_proxy?action=search&platform=$plat&q=${Uri.encodeComponent(query)}&page=$page&page_size=$ps&sort=price_asc';
     try {

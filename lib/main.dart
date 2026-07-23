@@ -157,7 +157,7 @@ class MainShellState extends State<MainShell> {
       body: IndexedStack(
         index: currentIndex,
         children: [
-          HomeScreen(onNavigateTab: goToTab),
+          const HomeScreen(),
           const CartScreen(),
           const ProfileScreen(),
         ],
