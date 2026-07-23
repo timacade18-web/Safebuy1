@@ -1,0 +1,10 @@
+build/
+.dart_tool/
+.packages
+*.iml
+*.lock
+.gradle/
+local.properties
+*.jks
+*.keystore
+key.properties
