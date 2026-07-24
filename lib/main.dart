@@ -129,6 +129,18 @@ class MainShell extends StatefulWidget {
 
 class MainShellState extends State<MainShell> {
   int currentIndex = 0;
+  bool _popupShown = false;
+
+  Future<void> _fetchAppConfig() async {
+    final api = Provider.of<ApiService>(context, listen: false);
+    await api.fetchAppConfig();
+  }
+
+  void _showPopupIfNeeded(BuildContext ctx) {
+    final api = Provider.of<ApiService>(ctx, listen: false);
+    // Popup config stored in ApiService
+    _showNotificationDialog(ctx);
+  }
 
   void goToTab(int index) {
     if (index == 1) {
@@ -154,13 +166,24 @@ class MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: [
-          const HomeScreen(),
-          const CartScreen(),
-          const ProfileScreen(),
-        ],
+      body: FutureBuilder<void>(
+        future: _fetchAppConfig(),
+        builder: (_, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return IndexedStack(
+              index: currentIndex,
+              children: [const HomeScreen(), const CartScreen(), const ProfileScreen()],
+            );
+          }
+          if (!_popupShown) {
+            Future.microtask(() => _showPopupIfNeeded(context));
+            setState(() => _popupShown = true);
+          }
+          return IndexedStack(
+            index: currentIndex,
+            children: [const HomeScreen(), const CartScreen(), const ProfileScreen()],
+          );
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex == 0 ? 0 : currentIndex == 1 ? 2 : 3,

@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Row(children: [
-        ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset('assets/icon-192.png', height: 36, width: 36)),
+        ClipRRect(borderRadius: BorderRadius.circular(8), child: _buildLogo()),
         const SizedBox(width: 6),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('SAFEBUY', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Color(0xFFFF5000))),
@@ -158,6 +158,15 @@ class _HomeScreenState extends State<HomeScreen> {
         const Icon(Icons.person_outline, color: Color(0xFF333333)),
       ]),
     );
+  }
+
+  Widget _buildLogo() {
+    final url = ApiService.appLogoUrl;
+    if (url != null) {
+      return Image.network(url, height: 36, width: 36, fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Image.asset('assets/icon-192.png', height: 36, width: 36));
+    }
+    return Image.asset('assets/icon-192.png', height: 36, width: 36);
   }
 
   Widget _buildSearch() {
