@@ -138,8 +138,7 @@ class MainShellState extends State<MainShell> {
 
   void _showPopupIfNeeded(BuildContext ctx) {
     final api = Provider.of<ApiService>(ctx, listen: false);
-    // Popup config stored in ApiService
-    _showNotificationDialog(ctx);
+    // Popup will be shown when config is available and enabled
   }
 
   void goToTab(int index) {
