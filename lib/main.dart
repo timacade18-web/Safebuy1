@@ -12,7 +12,11 @@ import 'screens/search_results_screen.dart';
 const Color kOrange = Color(0xFFFF6A00);
 const Color kNavy = Color(0xFF06265C);
 
-void main() {
+void main() async {
+  WidgetsBinding.ensureInitialized();
+  // Fetch app config (logo, splash, popup) before app renders
+  final api = ApiService();
+  await api.fetchAppConfig();
   runApp(const SafeBuyApp());
 }
 
@@ -129,17 +133,8 @@ class MainShell extends StatefulWidget {
 
 class MainShellState extends State<MainShell> {
   int currentIndex = 0;
-  bool _popupShown = false;
 
-  Future<void> _fetchAppConfig() async {
-    final api = Provider.of<ApiService>(context, listen: false);
-    await api.fetchAppConfig();
-  }
 
-  void _showPopupIfNeeded(BuildContext ctx) {
-    final api = Provider.of<ApiService>(ctx, listen: false);
-    // Popup will be shown when config is available and enabled
-  }
 
   void goToTab(int index) {
     if (index == 1) {
@@ -165,24 +160,9 @@ class MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<void>(
-        future: _fetchAppConfig(),
-        builder: (_, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return IndexedStack(
-              index: currentIndex,
-              children: [const HomeScreen(), const CartScreen(), const ProfileScreen()],
-            );
-          }
-          if (!_popupShown) {
-            Future.microtask(() => _showPopupIfNeeded(context));
-            setState(() => _popupShown = true);
-          }
-          return IndexedStack(
-            index: currentIndex,
-            children: [const HomeScreen(), const CartScreen(), const ProfileScreen()],
-          );
-        },
+      body: IndexedStack(
+        index: currentIndex,
+        children: [const HomeScreen(), const CartScreen(), const ProfileScreen()],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex == 0 ? 0 : currentIndex == 1 ? 2 : 3,
