@@ -135,76 +135,78 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildAppBar() {
+    final url = ApiService.appLogoUrl;
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      height: 48,
       child: Row(children: [
-        ClipRRect(borderRadius: BorderRadius.circular(8), child: _buildLogo()),
-        const SizedBox(width: 6),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('SAFEBUY', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Color(0xFFFF5000))),
-          Text('Shop China → Africa', style: TextStyle(fontSize: 9, color: Colors.grey[500])),
-        ]),
+        GestureDetector(
+          onTap: () => Navigator.of(context).pushNamed('/'),
+          child: _buildLogo(url: url),
+        ),
         const Spacer(),
         Consumer<CartService>(builder: (_, cart, __) {
-          return Badge(
-            isLabelVisible: cart.itemCount > 0,
-            label: Text('${cart.itemCount}', style: const TextStyle(fontSize: 10, color: Colors.white)),
-            backgroundColor: const Color(0xFFFF0036),
-            child: const Icon(Icons.shopping_cart_outlined, color: Color(0xFF333333)),
-          );
+          return Stack(children: [
+            Icon(Icons.shopping_cart_outlined, color: const Color(0xFF666666), size: 20),
+            if (cart.itemCount > 0) Positioned(
+              top: 0, right: 0,
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: const BoxDecoration(color: Color(0xFFFF0036), shape: BoxShape.circle),
+                constraints: const BoxConstraints(minWidth: 12, minHeight: 12),
+                child: Text('\${cart.itemCount}', style: const TextStyle(fontSize: 7, color: Colors.white), textAlign: TextAlign.center),
+              ),
+            ),
+          ]);
         }),
-        const SizedBox(width: 16),
-        const Icon(Icons.person_outline, color: Color(0xFF333333)),
+        const SizedBox(width: 8),
+        const Icon(Icons.account_circle, color: Color(0xFF666666), size: 24),
       ]),
     );
   }
 
-  Widget _buildLogo() {
-    final url = ApiService.appLogoUrl;
+  Widget _buildLogo({String? url}) {
     if (url != null) {
-      return Image.network(url, height: 36, width: 36, fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Image.asset('assets/icon-192.png', height: 36, width: 36));
+      return Image.network(url, height: 36, fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => Image.asset('assets/app_icon.png', height: 36, fit: BoxFit.contain));
     }
-    return Image.asset('assets/icon-192.png', height: 36, width: 36);
+    return Image.asset('assets/app_icon.png', height: 36, fit: BoxFit.contain);
   }
 
   Widget _buildSearch() {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
       child: Container(
-        height: 48,
+        height: 40,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(colors: [Color(0xFFFF6A00), Color(0xFFFF5000)]),
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [BoxShadow(color: const Color(0xFFFF5000).withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 2))],
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFFF6A00), width: 2),
         ),
         child: Row(children: [
-          const SizedBox(width: 18),
+          const SizedBox(width: 12),
           Expanded(child: TextField(
             controller: _searchCtl,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
+            style: const TextStyle(color: Colors.black, fontSize: 14),
             decoration: const InputDecoration(
-              border: InputBorder.none, hintText: 'Search products...',
-              hintStyle: TextStyle(color: Colors.white70, fontSize: 16),
+              border: InputBorder.none, hintText: 'Search Taobao, 1688...',
+              hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
             ),
             onSubmitted: (q) { if (q.trim().isNotEmpty) _doSearch(q.trim()); },
           )),
           GestureDetector(
-            onTap: () => _doSearch('📷'), // image search trigger
-            child: Container(width: 36, height: 36, decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(18),
-            ), child: const Icon(Icons.camera_alt, color: Colors.white, size: 20)),
+            onTap: () => _doSearch('📷'),
+            child: Container(width: 40, height: 40,
+              child: const Icon(Icons.camera_alt, color: Color(0xFF999999), size: 16)),
           ),
-          const SizedBox(width: 8),
           GestureDetector(
             onTap: () { if (_searchCtl.text.trim().isNotEmpty) _doSearch(_searchCtl.text.trim()); },
-            child: Container(width: 36, height: 36, decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(18),
-            ), child: const Icon(Icons.search, color: Color(0xFFFF5000), size: 20)),
+            child: Container(width: 36, height: 36, margin: const EdgeInsets.only(top: 2, right: 2),
+              decoration: BoxDecoration(color: const Color(0xFFFF6A00), shape: BoxShape.circle),
+              child: const Icon(Icons.search, color: Colors.white, size: 16)),
           ),
-          const SizedBox(width: 8),
         ]),
       ),
     );
