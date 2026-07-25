@@ -48,9 +48,10 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+
+
 }
 
 flutter {
     source = "../.."
-    applicationIcon = "assets/app_icon.png"
 }
