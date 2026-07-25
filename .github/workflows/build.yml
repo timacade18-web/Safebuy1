@@ -24,13 +24,8 @@ jobs:
       - name: Generate launcher icons
         run: flutter pub run flutter_launcher_icons
 
-      - name: Copy icons to flutter build path
-        run: |
-          if [ -d .android ]; then
-            cp -r android/app/src/main/res/mipmap-* .android/app/src/main/res/
-            cp -r android/app/src/main/res/values/ic_launcher_background.xml .android/app/src/main/res/values/
-            echo "Icons copied to .android/"
-          fi
+      - name: Add sourceSets to flutter-generated build.gradle
+        run: python3 scripts/add_source_sets.py
 
       - name: Build APK
         run: flutter build apk --release
