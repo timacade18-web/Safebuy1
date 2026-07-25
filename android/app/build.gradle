@@ -52,4 +52,5 @@ android {
 
 flutter {
     source = "../.."
+    applicationIcon = "assets/app_icon.png"
 }
