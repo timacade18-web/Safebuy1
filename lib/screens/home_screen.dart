@@ -135,16 +135,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildAppBar() {
-    final url = ApiService.appLogoUrl;
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      height: 48,
-      child: Row(children: [
-        GestureDetector(
-          onTap: () => Navigator.of(context).pushNamed('/'),
-          child: _buildLogo(url: url),
-        ),
+    return ValueListenableBuilder<String?>(
+      valueListenable: ApiService.appLogoUrl,
+      builder: (_, url, __) {
+        return Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          height: 48,
+          child: Row(children: [
+            GestureDetector(
+              onTap: () => Navigator.of(context).pushNamed('/'),
+              child: _buildLogo(url: url),
+            ),
         const Spacer(),
         Consumer<CartService>(builder: (_, cart, __) {
           return Stack(children: [
@@ -163,6 +165,8 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(width: 8),
         const Icon(Icons.account_circle, color: Color(0xFF666666), size: 24),
       ]),
+        );
+      },
     );
   }
 

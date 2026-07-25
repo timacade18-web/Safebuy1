@@ -283,7 +283,7 @@ class ApiService {
   }
 
   // ── App config (logo, splash, popup) — fetched once at startup ──
-  static String? _appLogoUrl;
+  static final ValueNotifier<String?> appLogoUrl = ValueNotifier(null);
   static bool _appConfigLoaded = false;
 
   Future<void> fetchAppConfig() async {
@@ -293,13 +293,12 @@ class ApiService {
       final resp = await http.get(url, headers: _headers()).timeout(const Duration(seconds: 10));
       final data = json.decode(resp.body);
       if (data['success'] == true) {
-        _appLogoUrl = data['app_logo']?.toString();
+        final logoUrl = data['app_logo']?.toString();
+        appLogoUrl.value = logoUrl;
         _appConfigLoaded = true;
       }
     } catch (e) {
       debugPrint('App config fetch failed: $e');
     }
   }
-
-  static String? get appLogoUrl => _appLogoUrl;
 }

@@ -13,7 +13,6 @@ const Color kOrange = Color(0xFFFF6A00);
 const Color kNavy = Color(0xFF06265C);
 
 void main() async {
-  WidgetsBinding.ensureInitialized();
   // Fetch app config (logo, splash, popup) before app renders
   final api = ApiService();
   await api.fetchAppConfig();
