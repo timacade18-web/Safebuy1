@@ -72,10 +72,6 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   return ProductCard(
                     product: p,
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(product: p))),
-                    onAddToCart: () {
-                      context.read<CartService>().addItem(p, priceUsd: p.priceUsd);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Added to cart ✔'), duration: Duration(seconds: 1)));
-                    },
                   );
                 },
               ),
