@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _loadingTrending = true;
   int _bannerIdx = 0;
   bool _initialized = false;
+  String _flashTimer = '02:34:12';
 
   static const _cats = [
     {'icon': '👗', 'label': 'Dresses', 'color': 0xFFFFF0E6, 'q': 'dresses'},
@@ -87,6 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(child: _buildBanner()),
             // Platform tabs
             SliverToBoxAdapter(child: _buildPlatTabs()),
+            // Flash Deals
+            SliverToBoxAdapter(child: _buildFlashDeals()),
             // Categories
             SliverToBoxAdapter(child: _buildCategories()),
             // Trending header
@@ -107,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   sliver: SliverGrid(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.62, crossAxisSpacing: 8, mainAxisSpacing: 8,
+                      crossAxisCount: 2, childAspectRatio: 1, crossAxisSpacing: 8, mainAxisSpacing: 8,
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (ctx, i) => ProductCard(
@@ -115,13 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: () => Navigator.push(context, MaterialPageRoute(
                           builder: (_) => ProductDetailScreen(product: _trending[i]),
                         )),
-                        onAddToCart: () {
-                              final p = _trending[i];
-                              context.read<CartService>().addItem(p, priceUsd: p.priceUsd);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Added to cart ✔'), duration: Duration(seconds: 1)),
-                          );
-                        },
                       ),
                       childCount: _trending.length,
                     ),
@@ -213,6 +209,26 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ]),
       ),
+    );
+  }
+
+  Widget _buildFlashDeals() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFF5F0), Color(0xFFFFF0E8)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(children: [
+        const Text('\u26A1 FLASH', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFFFF6A00))),
+        const Spacer(),
+        Text('Ends in ${_flashTimer}', style: const TextStyle(fontSize: 12, color: Color(0xFFFF3B30), fontWeight: FontWeight.w600)),
+      ]),
     );
   }
 

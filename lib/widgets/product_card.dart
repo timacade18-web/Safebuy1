@@ -5,41 +5,35 @@ import '../models/product.dart';
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback? onTap;
-  final VoidCallback? onAddToCart;
 
   const ProductCard({
     super.key,
     required this.product,
     this.onTap,
-    this.onAddToCart,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              child: CachedNetworkImage(
-                imageUrl: product.imageUrl,
-                height: 160,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
-                  height: 160,
-                  color: const Color(0xFFF0F0F0),
-                  child: const Center(child: Icon(Icons.image, size: 40, color: Color(0xFFCCCCCC))),
-                ),
-                errorWidget: (_, __, ___) => Container(
-                  height: 160,
-                  color: const Color(0xFFF0F0F0),
-                  child: const Center(child: Icon(Icons.broken_image, size: 40, color: Color(0xFFCCCCCC))),
+            // Image - square aspect ratio like web
+            AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                child: CachedNetworkImage(
+                  imageUrl: product.imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (_, __) => Container(color: const Color(0xFFF0F0F0)),
+                  errorWidget: (_, __, ___) => Container(color: const Color(0xFFF0F0F0)),
                 ),
               ),
             ),
@@ -49,21 +43,26 @@ class ProductCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title (max 2 lines)
+                  // Title (2 lines max)
                   Text(
                     product.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.3),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      height: 1.4,
+                      color: Color(0xFF1A1A1A),
+                    ),
                   ),
                   const SizedBox(height: 4),
-                  // Price row
+                  // Price (orange 17px bold)
                   Row(
                     children: [
                       Text(
                         '\$${product.displayPrice.toStringAsFixed(2)}',
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 17,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFFFF6A00),
                         ),
@@ -73,13 +72,23 @@ class ProductCard extends StatelessWidget {
                         Text(
                           '\$${product.priceUsd.toStringAsFixed(2)}',
                           style: const TextStyle(
-                            fontSize: 11,
+                            fontSize: 10,
                             color: Color(0xFF999999),
                             decoration: TextDecoration.lineThrough,
                           ),
                         ),
                       ],
-                      const Spacer(),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  // Meta: platform + sold
+                  Row(
+                    children: [
+                      Text(
+                        product.platform ?? '1688',
+                        style: const TextStyle(fontSize: 10, color: Color(0xFF999999)),
+                      ),
+                      const SizedBox(width: 4),
                       if (product.sales > 0)
                         Text(
                           '${product.sales} sold',
@@ -87,22 +96,6 @@ class ProductCard extends StatelessWidget {
                         ),
                     ],
                   ),
-                  if (onAddToCart != null) ...[
-                    const SizedBox(height: 6),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 32,
-                      child: ElevatedButton(
-                        onPressed: onAddToCart,
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-                          textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                        ),
-                        child: const Text('Add to Cart'),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
